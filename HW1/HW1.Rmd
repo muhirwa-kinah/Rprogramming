@@ -1,0 +1,103 @@
+---
+title: "Import Data From Statistical Packages, Database Mangement System and API "
+author: "Muhirwa Singiza Shekinah Id:20252MBI027"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# HW1: Import Data from Statistical Packages and Database Management Systems
+
+## Part A: Importing Data from a Statistical Package
+
+In this part, I created a small dataset containing fictional hospital doctors. The dataset includes their department, years of experience, and number of patients seen per day.
+
+I then saved the data as an SPSS file and imported it back into R to practice importing data from a statistical package.
+
+### Step 1: Create the hospital doctors' data
+
+```{r}
+doctors <- data.frame(
+  Doctor_ID = c(101, 102, 103, 104, 105),
+  Doctor_Name = c("Dr. Alice", "Dr. David", "Dr. Grace",
+                  "Dr. John", "Dr. Sarah"),
+  Department = c("Cardiology", "Pediatrics", "Emergency",
+                 "Radiology", "Surgery"),
+  Years_Experience = c(8, 5, 10, 6, 12),
+  Patients_Per_Day = c(15, 20, 25, 12, 18)
+)
+
+print(doctors)
+```
+
+### Step 2: Export the data to an SPSS file
+
+```{r}
+library(haven)
+
+write_sav(doctors, "hospital_doctors.sav")
+```
+
+### Step 3: Import the SPSS file into R
+
+```{r}
+imported_doctors <- read_sav("hospital_doctors.sav")
+
+print(imported_doctors)
+head(imported_doctors)
+```
+## Part B: Importing Data from a Database Management System
+
+In this part, I will use an mySql database to store the fictional hospital doctors' data. I will then connect to the database and import the data into R.
+
+
+```{r}
+# Connect R to the hospital database
+library(DBI)
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  host = "localhost",
+  port = 3306,
+  user = "root",
+  password = "",
+  dbname = "hospital_db"
+)
+
+# Check the database connection
+dbListTables(con)
+# Save the doctors' dataset into MySQL
+
+dbWriteTable(con, "doctors", doctors,
+             overwrite = TRUE, row.names = FALSE)
+
+# Check the records stored in MySQL
+
+dbReadTable(con, "doctors")
+# Close the database connection
+dbDisconnect(con)
+```
+## Part C: Importing Data from an API
+
+In this part, I will use a public API to retrieve sample data and import it into R. This helps me understand how data can be collected from an online source.
+
+```{r}
+
+# Load the package
+library(jsonlite)
+
+# Import data from the API
+api_url <- "https://jsonplaceholder.typicode.com/users"
+api_data <- fromJSON(api_url)
+
+# Because the API was disarranged this help to select the data needed
+simple_data <- api_data[, c("id", "name", "username", "email")]
+
+print(simple_data, row.names = FALSE)
+
+```
+
