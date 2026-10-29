@@ -1,0 +1,165 @@
+---
+title: "Class 1&2"
+author: "Shekinah"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is the first day of introduction to R and R studio, I will learn how to produce document using R markdown
+## Data Structure (Numeric, Character, Integer, Matrix)
+
+```{r}
+x<- c(0.5, 0.6)
+age<- c(20,35,32,29)
+summary(age)
+mean(age)
+```
+## Vector with NAs in it
+```{r}
+y<- c(1,2,NA, 3, 4)
+is.na(y)
+```
+## Matrix
+```{r}
+(x<- matrix(1:6, nrow = 2, ncol = 3))
+(y<-matrix(1:6, nrow = 3, ncol = 2))
+x%*%y
+```
+##Create Data
+```{r}
+studentID<-c(1,2,3,4,5,6)
+math_score<-c(12,17,10,9,NA,15)
+it_score<-c(13,18,11,10,19, 12)
+gender<-c("M","F","M","M","F","M")
+scoredata<-data.frame(studentID,gender,math_score,it_score)
+scoredata
+```
+
+
+##Import data From CSV
+
+```{r}
+data_class<- read.csv("C:/Users/HP/Desktop/Study/Tasks/StudentMarks.csv")
+names(data_class)
+head(data_class)
+tail(data_class)
+data_class[5:6,]
+summary(data_class$MidTerm)
+length(data_class$MidTerm)
+```
+
+
+```{r}
+
+```
+## Use dataset built-in in R 
+```{r}
+data()
+data("Titanic")
+variable.names(Titanic)
+str(Titanic)
+summary(Titanic)
+apply(Titanic,1,mean)
+```
+## Categorical and a continuous variable
+
+```{r}
+data("iris")
+head(iris)
+mean(iris$Petal.Length)
+table(iris$Species)
+by(iris$Sepal.Length, iris$Species, mean)
+boxplot(Sepal.Length ~ Species, data = iris, main =  "Sepal Length by Species", xlab = "Species", ylab = "Sepal Length")
+```
+##Relationship btn two Categorical variable
+```{r}
+
+data("UCBAdmissions")
+ucba<- data.frame(UCBAdmissions)
+head(ucba)
+cross<- xtabs(Freq~Gender+Admit,data=ucba) ## here you need to put cross to get the result
+(cross<- xtabs(Freq~Gender+Admit,data=ucba))
+prop.table(cross,2)
+
+```
+##Simpson's paradox
+```{r}
+cross2<-xtabs(Freq~Gender+Admit,data=ucba[ucba$Dept=="F",])
+prop.table(cross2,1)
+```
+## Bar Chart
+dat <- read.table(text ="ProdA ProdB ProdC ProdD
+1 110 50 60 70 
+2 120 50 80 65", header= TRUE)
+barplot(as.matrix(dat),beside=TRUE,col=c("Red","green"))
+
+## Import Data and do Scatter plot
+```{r}
+data_class2<-read.table("C:\\Users\\HP\\Desktop\\Study\\Tasks\\height_weight_data.txt", header = TRUE)
+names(data_class2)
+print(data_class2)
+plot(data_class2$Height, data_class2$Weight)
+cor(data_class2$Height,data_class2$Weight)
+plot(Weight~Height,data=data_class2)
+## Linear Models
+model <- lm(Weight ~ Height, data = data_class2)
+abline(model, col = "red")
+## histogram
+hist(data_class2$Height, col="blue")
+
+```
+## Subset (selecting variables,dropping variables,selecting observation )
+
+```{r}
+newdata3<-leadership[,c(5:9)]
+myvars<-c("q1","q2","q3","q4","q5")
+(newdata3<-leadership[myvars])
+```
+```{r}
+newdata4<-leadership[,c(-1,-2)]
+(newdata4<-leadership[,-(1:5)])
+newdata5<-leadership[,c(-1,-7)]
+leadership[[4]]
+
+```
+
+
+### Date
+
+dob<- as.Date("2002-06-10")
+today<-as.Date("2026-10-29")
+difftime(today, dob, units="days")
+
+## Subsetting
+
+```{r}
+manager <- c(1,2,3,4,5)
+country<- c("US","US","UK","UK","UK")
+gender<-c("M","F","F","M","F")
+age<-c(32,45,25,39,99)
+q1<-c(5,3,3,3,2)
+q2<-c(4,5,5,3,2)
+q3<-c(5,2,5,4,1)
+q4<-c(5,5,5,NA,2)
+q5<-c(5,5,2,NA,1)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5, stringsAsFactors = TRUE)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5)
+str(leadership)
+
+names(leadership)
+leadership$age[leadership$age==99]<-NA
+View(leadership)
+leadership$agecat[leadership$age >75]<-"Elder"
+leadership$agecat[leadership$age>=35 & leadership$age<=75]<-"Middle Aged"
+leadership$agecat[leadership$age <35]<- "Young"
+is.na(leadership[,5:9])
+newdata<-na.omit(leadership)
+newdata
+```
+
