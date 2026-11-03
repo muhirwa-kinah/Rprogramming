@@ -1,0 +1,112 @@
+---
+title: "Exercises"
+author: "Muhirwa Singiza Shekinah ID:20252MBI027"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Make functions that calculate summary statistics and apply them to a variable to show that they work
+```{r}
+# Import the Height and Weight dataset
+heightweight <- read.table("C:\\Users\\HP\\Desktop\\Exercises\\height_weight_data.txt", header = TRUE)
+
+# Display the first six rows
+head(heightweight)
+
+# Check the structure of the dataset
+str(heightweight)
+
+
+# Creating a function that calculates summary statistics
+summarystatistics <- function(x) {
+
+  # Count the number of observations
+  n <- length(x)
+
+  # Calculate the mean
+  meanvalue <- sum(x) / n
+
+  # Sort the values in ascending order
+  sortednumbers <- sort(x)
+
+  # Calculate the median
+  if (n %% 2 == 0) {
+    medianvalue <- (sortednumbers[n/2] + sortednumbers[n/2 + 1]) / 2
+  } else {
+    medianvalue <- sortednumbers[(n + 1)/2]
+  }
+
+  # Calculate the minimum value
+  minimumvalue <- min(x)
+
+  # Calculate the maximum value
+  maximumvalue <- max(x)
+
+  # Calculate the sample variance
+  variancevalue <- sum((x - meanvalue)^2) / (n - 1)
+
+  # Calculate the standard deviation
+  sdvalue <- sqrt(variancevalue)
+
+  # Combine all calculated function into a list to be able to create get summary statistics
+  results <- list(
+    Count = n,
+    Mean = meanvalue,
+    Median = medianvalue,
+    Minimum = minimumvalue,
+    Maximum = maximumvalue,
+    Variance = variancevalue,
+    StandardDeviation = sdvalue
+  )
+
+  # Return the calculated results
+  return(results)
+}
+
+
+# Apply the function to either Height or weight
+
+# Calculate summary statistics for Height
+heightresults <- summarystatistics(heightweight$Height)
+
+# Display Height results
+print("Summary Statistics for Height")
+print(heightresults)
+
+# Calculate summary statistics for Weight
+weightresults <- summarystatistics(heightweight$Weight)
+
+# Display Weight results
+print("Summary Statistics for Weight")
+print(weightresults)
+
+```
+
+## Make a function to calculate a two-sample t test, then apply it to your data.
+
+```{r}
+# Exam scores for students in Class A
+class_A <- c(65, 70, 75, 80, 85)
+
+# Exam scores for students in Class B
+class_B <- c(55, 60, 65, 70, 75)
+# Function to perform a two-sample t-test
+two_sample_ttest <- function(x, y) {
+
+  # Compare the means of the two groups
+  result <- t.test(x, y)
+
+  # Return the test result
+  return(result)
+}
+# Apply the function to Class A and Class B
+test_result <- two_sample_ttest(class_A, class_B)
+
+# Display the results
+print(test_result)
+```
+
