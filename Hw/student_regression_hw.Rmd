@@ -1,0 +1,96 @@
+---
+title: "Multiple Linear Regression: Student Performance"
+author: "Shekinah"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# show the code and the output in the final document
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## import Data
+
+```{r}
+# read the csv file (keep it in the same folder as this Rmd file)
+students <- read.csv("C:\\Users\\HP\\Desktop\\Study\\Hw\\StudentsPerformance.csv")
+
+# see the first 6 rows
+head(students)
+
+# how many rows and columns
+dim(students)
+
+# summary of the three scores I will use
+summary(students[, c("math.score", "reading.score", "writing.score")])
+
+# check if there are missing values (0 means none)
+sum(is.na(students))
+```
+
+
+```{r}
+# writing score vs math score
+plot(students$math.score, students$writing.score,
+     xlab = "Math score", ylab = "Writing score",
+     main = "Writing vs Math")
+
+# writing score vs reading score
+plot(students$reading.score, students$writing.score,
+     xlab = "Reading score", ylab = "Writing score",
+     main = "Writing vs Reading")
+
+# correlation between the three scores
+cor(students[, c("math.score", "reading.score", "writing.score")])
+```
+
+Both plots go upwards, so students who score high in math or reading also tend
+to score high in writing. The correlation between reading and writing is very
+strong (about 0.95) and math and writing is also strong (about 0.80).
+
+```{r}
+# lm() fits the multiple linear regression
+model <- lm(writing.score ~ math.score + reading.score, data = students)
+
+# show the results
+summary(model)
+```
+## Interpretation
+
+The fitted model is:
+
+writing score = -1.16 + 0.067 x math score + 0.937 x reading score
+
+- **math.score (0.067):** If reading score stays the same, one extra point in math adds about 0.07 points to the writing score. It is significant (p < 0.001), but the effect is small.
+- **reading.score (0.937):** If math score stays the same, one extra point in reading adds about 0.94 points to the writing score. It is significant (p < 0.001) and it is the main predictor.
+- **Intercept (-1.16):** This is the predicted writing score when math and reading are both 0. It is not significant (p > 0.05) and has no real meaning here.
+- **R-squared (0.913):** Math and reading together explain about 91% of the differences in writing scores, so the model fits very well.
+- **F-test:** The p-value is less than 0.001, so the model is significant overall.
+- **Residual standard error (4.49):** Predictions are off by about 4.5 points on average.
+
+**Conclusion:** Reading score is the strongest predictor of writing score. Math score also helps but adds very little.
+
+
+## Check the assumptions
+
+```{r}
+# 4 diagnostic plots in one picture
+par(mfrow = c(2, 2))
+plot(model)
+par(mfrow = c(1, 1))
+```
+
+From the plots, the residuals are mostly close to the line in the Q-Q plot and
+the points in the residuals vs fitted plot are spread around zero without a
+strong pattern, so the model is acceptable. A few students with very low scores
+show up as outliers.
+
+
+```{r predict}
+# predict the writing score of a student with math = 70 and reading = 75
+new_student <- data.frame(math.score = 70, reading.score = 75)
+predict(model, newdata = new_student)
+```
+
+The predicted writing score is about 74.
